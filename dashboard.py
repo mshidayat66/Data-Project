@@ -27,12 +27,13 @@ def create_rfm_df(all_df):
   
   # menghitung kapan terakhir pelanggan melakukan transaksi (hari)
   rfm_df["max_order_timestamp"] = rfm_df["max_order_timestamp"].dt.date
-  recent_date = all_df["order_purchase_timestamp"].dt.date.max()
+  recent_date = pd.to_datetime(order["order_purchase_timestamp"]).dt.date.max()
   rfm_df["recency"] = rfm_df["max_order_timestamp"].apply(lambda x: (recent_date - x).days)
   rfm_df.drop("max_order_timestamp", axis=1, inplace=True)
   return rfm_df
 
 all_df = pd.read_csv('all_data.csv')
+order = pd.read_csv('orders_dataset.csv')
 
 datetime_columns = ["order_purchase_timestamp", "order_delivered_customer_date"]
 all_df.sort_values(by="order_purchase_timestamp", inplace=True)
